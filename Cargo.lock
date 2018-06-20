@@ -10,3 +10,7 @@ version = "0.1.0"
 name = "chapter6"
 version = "0.1.0"
 
+[[package]]
+name = "chapter7"
+version = "0.1.0"
+
