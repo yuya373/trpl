@@ -14,3 +14,7 @@ version = "0.1.0"
 name = "chapter7"
 version = "0.1.0"
 
+[[package]]
+name = "chapter8"
+version = "0.1.0"
+
