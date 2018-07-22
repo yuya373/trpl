@@ -1,15 +1,8 @@
-use std::io;
-use std::io::Read;
-use std::fs::File;
-
-fn read_username_from_file() -> Result<String, io::Error> {
-    let mut buf = String::new();
-
-    File::open("hello.txt")?.read_to_string(&mut buf)?;
-    Ok(buf)
-}
+use std::net::IpAddr;
 
 fn main() {
-    let username = read_username_from_file();
-    println!("username: {:?}", username);
+    // 127.0.0.1 is always valid ip address
+    // it is acceptable to use `unwarp`
+    let home: IpAddr = "127.0.0.1".parse().unwrap();
+    println!("home: {:?}", home);
 }
