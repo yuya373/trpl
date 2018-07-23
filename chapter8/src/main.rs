@@ -55,86 +55,6 @@ fn main() {
     ];
     println!("row: {:?}", row);
 
-    let mut s = String::new();
-    println!("s: {:?}", s);
-
-    let data = "initial contents";
-    let s = data.to_string();
-
-    println!("s: {:?}", s);
-
-    let s = String::from("initial contents");
-    println!("s: {:?}", s);
-
-    let mut s = String::from("foo");
-    println!("s: {:?}", s);
-
-    s.push_str("bar");
-    println!("s: {:?}", s);
-
-    let mut s1 = String::from("foo");
-    let s2 = "bar";
-    s1.push_str(s2);
-    println!("s1: {:?}", s1);
-    println!("s2: {:?}", s2);
-
-    let mut s = String::from("lo");
-    s.push('l');
-    println!("s: {:?}", s);
-
-    let s1 = String::from("Hello, ");
-    let s2 = String::from("world!");
-    let s3 = s1 + &s2; // s1 has been moved here
-    println!("s3: {:?}", s3);
-    // println!("s1: {:?}", s1); // compile error! use of moved value (s1)
-    println!("s2: {:?}", s2);
-
-    let s4 = s3 + &s2;
-    // + is `fn add(self, s: &str) -> String { ... }`
-    // &s2 is &String. Rust use deref coercion.
-    // let s4 = s3 + &(s2[..]);
-    println!("s4: {:?}", s4);
-
-    let s1 = String::from("tic");
-    let s2 = String::from("tac");
-    let s3 = String::from("toe");
-
-    let s = s1 + "-" + &s2 + "-" + &s3;
-    println!("s: {:?}", s);
-
-    let s1 = String::from("tic");
-    let s2 = String::from("tac");
-    let s3 = String::from("toe");
-
-    let s = format!("{}-{}-{}", s1, s2, s3);
-    println!("s: {:?}", s);
-    // format! macro does not take owner ship of any of its parameters.
-    println!("s1: {:?}, s2: {:?}, s3: {:?}", s1, s2, s3);
-
-    let s1 = String::from("hello");
-    // Rust strings do not support indexing.
-    // let h = s1[0];
-
-    let s = String::from("Hola");
-    println!("{:?} is {:?} bytes long", s, s.len());
-
-    let s = String::from("こんにちわ");
-    println!("{:?} is {:?} bytes long", s, s.len());
-
-    let hello = String::from("こんにちわ");
-    // thread 'main' panicked at 'byte index 2 is not a char boundary; it is inside 'こ' (bytes 0..3) of `こんにちわ`', libcore/str/mod.rs:2111:5
-    // let s = &hello[0..2];
-    let s = &hello[0..6];
-    println!("s: {:?}", s);
-
-    for c in "こんにちわ".chars() {
-        println!("{}", c);
-    }
-
-    for b in "こんにちわ".bytes() {
-        println!("{}", b);
-    }
-
     use std::collections::HashMap;
 
     let mut scores = HashMap::new();
@@ -142,38 +62,173 @@ fn main() {
     scores.insert(String::from("Yellow"), 50);
     println!("scores: {:?}", scores);
 
-    let teams = vec![String::from("Blue"), String::from("Yellow")];
-    let initial_scores = vec![10, 50];
-    let scores: HashMap<_, _> = teams.iter().zip(initial_scores.iter()).collect();
+    scores.insert(String::from("Blue"), 99);
     println!("scores: {:?}", scores);
-
-    let scores_with_team = vec![(String::from("Blue"), 10), (String::from("Yellow"), 50)];
-    // ???
-    // let scores: HashMap<_, _> = scores_with_team.iter().collect();
-    let scores: HashMap<_, _> = scores_with_team.into_iter().collect();
-    println!("scores: {:?}", scores);
-
-    let name = String::from("Favorite color");
-    let value = String::from("Blue");
-    let mut map = HashMap::new();
-    map.insert(name, value); // name and value are moved here.
-    println!("map: {:?}", map);
-    // compile error! name and value has been moved.
-    // println!("{:?}", name);
-    // println!("{:?}", value);
 
     let mut scores = HashMap::new();
-
     scores.insert(String::from("Blue"), 10);
-    scores.insert(String::from("Yellow"), 50);
-    println!("score: {:?}", scores.get("Blue"));
-    let team_name = String::from("Blue");
-    println!("score: {:?}", scores.get(&team_name));
-    println!("above score is {:?}'s", team_name); // `get` using reference as argument
-    println!("when key is not exists: {:?}", scores.get("Hoge"));
 
-    // not ordered
-    for (key, value) in &scores {
-        println!("{}: {}", key, value);
+    scores.entry(String::from("Yellow")).or_insert(50);
+    scores.entry(String::from("Blue")).or_insert(50);
+    println!("scores: {:?}", scores);
+
+    let text = "hello world wonderful world";
+    let mut map = HashMap::new();
+
+    for word in text.split_whitespace() {
+        let count = map.entry(word).or_insert(0);
+        *count += 1;
+    }
+    println!("{:?}", map);
+
+    // let mut count = 0;
+    // count += 1;
+    // println!("count: {:?}", count);
+
+    // let mut count = &0;
+    // count += 1;
+    // println!("count: {:?}", count);
+
+    let l = vec![1, 2, 3, 4, 5];
+    println!("{:?} -> average: {:?}", l, average(&l));
+    let l = vec![1, 2, 3, 4, 5];
+    println!("{:?} -> median: {:?}", l, median(&l));
+    let l = vec![1, 2, 3, 4, 5, 6];
+    println!("{:?} -> median: {:?}", l, median(&l));
+    let l = vec![1, 2, 3, 4, 5, 3];
+    println!("{:?} -> mode: {:?}", l, mode(&l));
+
+    println!("apple -> {:?}", str_to_pig_latin("apple"));
+    println!("first -> {:?}", str_to_pig_latin("first"));
+
+    company::main();
+}
+
+fn average(l: &Vec<i32>) -> f32 {
+    let mut sum = 0.0;
+
+    for i in l.into_iter() {
+        sum += *i as f32;
+    }
+
+    return sum / l.len() as f32;
+}
+
+fn median(l: &Vec<i32>) -> f32 {
+    if l.len() % 2 == 0 {
+        let middle = l.len() / 2;
+        let ll = &l[middle - 1..middle + 1];
+        let sum = ll[0] + ll[1];
+        return sum as f32 / 2.0;
+    } else {
+        return l[l.len() / 2] as f32;
+    }
+}
+
+fn mode(l: &Vec<i32>) -> i32 {
+    use std::collections::HashMap;
+
+    let mut map = HashMap::new();
+
+    for i in l.into_iter() {
+        let mut count = map.entry(i).or_insert(0);
+        *count += 1;
+    }
+
+    let (mode, _) = map
+        .iter()
+        .max_by(|&x, &y| {
+            let (_, v1) = x;
+            let (_, v2) = y;
+            return v1.cmp(v2);
+        })
+        .unwrap();
+
+    return **mode;
+}
+
+fn str_to_pig_latin(s: &str) -> Option<String> {
+    let mut chars = s.chars();
+
+    match chars.next() {
+        Some(a) => if a == 'a' {
+            return Some(format!("{:}{:}-hay", a, chars.as_str()));
+        } else {
+            return Some(format!("{:}-{:}ay", chars.as_str(), a));
+        },
+        None => None,
+    }
+}
+
+mod company {
+    use std::collections::HashMap;
+    type Dic = HashMap<String, Vec<String>>;
+
+    pub fn main() {
+        let mut dic = HashMap::new();
+        run("Add a to 1", &mut dic);
+        run("Add b to 2", &mut dic);
+        run("Add c to 1", &mut dic);
+        print_members("1", &dic);
+        print_all_members(&dic);
+    }
+
+    fn run(s: &str, dic: &mut Dic) {
+        let mut itr = s.split_whitespace();
+        let verb = itr.next();
+
+        match verb {
+            Some(a) => if a == "Add" {
+                let name = itr.next();
+                let _ = itr.next();
+                let department = itr.next();
+                match department {
+                    Some(d) => match name {
+                        Some(n) => {
+                            let members = dic.entry(String::from(d)).or_insert(vec![]);
+                            members.push(String::from(n));
+                        }
+                        None => {}
+                    },
+                    None => {}
+                }
+            } else {
+            },
+            None => {}
+        }
+    }
+
+    fn print_members(dep: &str, dic: &Dic) {
+        match dic.get(dep) {
+            Some(members) => {
+                println!("In {:?} department: ", dep);
+                let mut members = members.clone();
+                &members.sort();
+                for member in members.iter() {
+                    println!("{:?}", member);
+                }
+            }
+            None => println!("No members in {:?}", dep),
+        }
+    }
+
+    fn print_all_members(dic: &Dic) {
+        let mut all_members: Vec<(&String, &String)> = vec![];
+
+        for (dep, members) in dic.iter() {
+            for member in members.iter() {
+                all_members.push((member, dep));
+            }
+        }
+
+        &all_members.sort_by(|&a, &b| {
+            let (name1, _) = a;
+            let (name2, _) = b;
+            return name1.cmp(name2);
+        });
+
+        for &(name, dept) in all_members.iter() {
+            println!("{:?}: {:?}", name, dept);
+        }
     }
 }
