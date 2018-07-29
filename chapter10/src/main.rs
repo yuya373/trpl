@@ -1,25 +1,25 @@
 #[derive(Debug)]
-struct Point<T> {
-    x: T,
-    y: T,
+enum Option<T> {
+    Some(T),
+    None,
 }
 
 #[derive(Debug)]
-struct Point_<T, U> {
-    x: T,
-    y: U,
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
 }
 
 fn main() {
-    let integer = Point { x: 5, y: 10 };
-    println!("integer: {:?}", integer);
+    let some: Option<i64> = Option::Some(3);
+    println!("some: {:?}", some);
 
-    let float = Point { x: 1.0, y: 4.0 };
-    println!("float: {:?}", float);
+    let none: Option<String> = Option::None;
+    println!("none: {:?}", none);
 
-    // both x and y are type T
-    // let wont_work = Point { x: 1, y: 3.0 };
+    let ok: Result<i64, String> = Result::Ok(3);
+    println!("ok: {:?}", ok);
 
-    let work = Point_ { x: 1, y: 3.0 };
-    println!("two generic type: {:?}", work);
+    let err: Result<i64, String> = Result::Err(String::from("hoge"));
+    println!("err: {:?}", err);
 }
