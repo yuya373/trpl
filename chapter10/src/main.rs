@@ -1,40 +1,40 @@
-#[derive(Debug)]
-struct Point<T, U> {
-    x: T,
-    y: U,
+pub trait Summary {
+    fn summarize(&self) -> String;
 }
 
-impl<T, U> Point<T, U> {
-    fn x(&self) -> &T {
-        &self.x
-    }
+pub struct NewsArticle {
+    pub headline: String,
+    pub location: String,
+    pub author: String,
+    pub content: String,
+}
 
-    fn mixup<V, W>(self, other: Point<V, W>) -> Point<T, W> {
-        Point {
-            x: self.x,
-            y: other.y,
-        }
+impl Summary for NewsArticle {
+    fn summarize(&self) -> String {
+        format!("{}, by {} ({})", self.headline, self.author, self.location)
     }
 }
 
-impl Point<f32, f32> {
-    fn distance_from_origin(&self) -> f32 {
-        (self.x.powi(2) + self.y.powi(2)).sqrt()
+pub struct Tweet {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub retweet: bool,
+}
+
+impl Summary for Tweet {
+    fn summarize(&self) -> String {
+        format!("{}: {}", self.username, self.content)
     }
 }
 
 fn main() {
-    let p = Point { x: 3, y: 10 };
-    println!("p.x = {}", p.x()); // p.x is not equal to p.x();
+    let tweet = Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from("of course, as you probably already know, people"),
+        reply: false,
+        retweet: false,
+    };
 
-    // p.distance_from_origin(); // only Point<f32> have this method
-
-    let p = Point { x: 3.0, y: 10.0 };
-    println!("distance from origin: {:?}", p.distance_from_origin());
-
-    let p1 = Point { x: 5, y: 10.4 };
-    let p2 = Point { x: "Hello", y: 'c' };
-    let p3 = p1.mixup(p2);
-    // println!("p1: {:?}", p1); // p1 and p2 is moved value
-    println!("p3.x = {}, p3.y = {}", p3.x, p3.y);
+    println!("1 new tweet: {}", tweet.summarize());
 }
