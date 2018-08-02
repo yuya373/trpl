@@ -1,79 +1,40 @@
-pub trait Summary {
-    fn summarize_author(&self) -> String;
-    fn summarize(&self) -> String {
-        String::from("(Read more...)")
+//“Stack-Only Data: Copy” section in Chapter 4
+fn largest<T: std::cmp::PartialOrd + std::marker::Copy>(l: &[T]) -> T {
+    let mut largest: T = l[0];
+
+    for &n in l {
+        if n > largest {
+            largest = n;
+        }
     }
+
+    largest
 }
 
-pub struct NewsArticle {
-    pub headline: String,
-    pub location: String,
-    pub author: String,
-    pub content: String,
-}
+fn largest_ref<T: std::cmp::PartialOrd>(l: &[T]) -> &T {
+    let mut largest = &l[0];
 
-impl Summary for NewsArticle {
-    fn summarize_author(&self) -> String {
-        format!("{}", self.author)
+    for n in l {
+        if *n > *largest {
+            largest = n;
+        }
     }
-}
 
-pub struct Tweet {
-    pub username: String,
-    pub content: String,
-    pub reply: bool,
-    pub retweet: bool,
-}
-
-impl Summary for Tweet {
-    fn summarize_author(&self) -> String {
-        format!("@{}", self.username)
-    }
-    // fn summarize(&self) -> String {
-    //     format!("{}: {}", self.username, self.content)
-    // }
-}
-
-pub fn notify<T: Summary>(item: &T) {
-    println!("Breaking news! {}", item.summarize());
+    largest
 }
 
 fn main() {
-    let article = NewsArticle {
-        headline: String::from("Penguins win the Stanley Cup Championship!"),
-        location: String::from("Pittsburgh, PA, USA"),
-        author: String::from("Iceburgh"),
-        content: String::from(
-            "The Pittsburgh Penguins once again are the best hockey team in the NHL.",
-        ),
-    };
+    let number_list = vec![34, 50, 25, 100, 65];
+    let result = largest(&number_list);
+    println!("The largest number is {}", result);
 
-    println!("New article available!: {}", article.summarize());
+    let char_list = vec!['y', 'm', 'a', 'q'];
+    let result = largest(&char_list);
+    println!("The largest char is {}", result);
 
-    let tweet = Tweet {
-        username: String::from("horse_ebooks"),
-        content: String::from("of course, as you probably already know, people"),
-        reply: false,
-        retweet: false,
-    };
+    let result = largest_ref(&number_list);
+    println!("The largest number is {}", *result);
 
-    println!("1 new tweet: {}", tweet.summarize());
-
-    notify(&article);
-    notify(&tweet);
-}
-
-use std::fmt::Debug;
-use std::fmt::Display;
-
-fn some_function<T: Display + Clone, U: Clone + Debug>(t: T, u: U) -> i32 {
-    42
-}
-
-fn some_function_with_where<T, U>(t: T, u: U) -> i32
-where
-    T: Display + Clone,
-    U: Clone + Debug,
-{
-    42
+    let result = largest_ref(&char_list);
+    println!("The largest char is {}", *result);
 }
