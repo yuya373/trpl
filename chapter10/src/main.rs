@@ -34,6 +34,10 @@ impl Summary for Tweet {
     // }
 }
 
+pub fn notify<T: Summary>(item: &T) {
+    println!("Breaking news! {}", item.summarize());
+}
+
 fn main() {
     let article = NewsArticle {
         headline: String::from("Penguins win the Stanley Cup Championship!"),
@@ -54,4 +58,22 @@ fn main() {
     };
 
     println!("1 new tweet: {}", tweet.summarize());
+
+    notify(&article);
+    notify(&tweet);
+}
+
+use std::fmt::Debug;
+use std::fmt::Display;
+
+fn some_function<T: Display + Clone, U: Clone + Debug>(t: T, u: U) -> i32 {
+    42
+}
+
+fn some_function_with_where<T, U>(t: T, u: U) -> i32
+where
+    T: Display + Clone,
+    U: Clone + Debug,
+{
+    42
 }
