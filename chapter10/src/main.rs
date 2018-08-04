@@ -1,10 +1,14 @@
-fn main() {
-    let r;
-
-    {
-        let x = 5;
-        r = &x;
+fn longest(a: &str, b: &str) -> &str {
+    if a.len() > b.len() {
+        a
+    } else {
+        b
     }
+}
+fn main() {
+    let string1 = String::from("abcd");
+    let string2 = "xyz";
 
-    println!("r: {}", r); // r would be referencing memory that was deallocated when x went out of scope.
+    let result = longest(string1.to_string(), string2);
+    println!("The longest string is {}", result);
 }
