@@ -1,40 +1,27 @@
-//“Stack-Only Data: Copy” section in Chapter 4
-fn largest<T: std::cmp::PartialOrd + std::marker::Copy>(l: &[T]) -> T {
-    let mut largest: T = l[0];
+use std::fmt::Display;
 
-    for &n in l {
-        if n > largest {
-            largest = n;
-        }
-    }
-
-    largest
+struct Pair<T> {
+    x: T,
+    y: T,
 }
 
-fn largest_ref<T: std::cmp::PartialOrd>(l: &[T]) -> &T {
-    let mut largest = &l[0];
+impl<T> Pair<T> {
+    fn new(x: T, y: T) -> Self {
+        Self { x, y }
+    }
+}
 
-    for n in l {
-        if *n > *largest {
-            largest = n;
+impl<T: PartialOrd + Display> Pair<T> {
+    fn cmp_display(&self) {
+        if self.x >= self.y {
+            println!("The largest member is x = {}", self.x);
+        } else {
+            println!("The largest member is y = {}", self.y);
         }
     }
-
-    largest
 }
 
 fn main() {
-    let number_list = vec![34, 50, 25, 100, 65];
-    let result = largest(&number_list);
-    println!("The largest number is {}", result);
-
-    let char_list = vec!['y', 'm', 'a', 'q'];
-    let result = largest(&char_list);
-    println!("The largest char is {}", result);
-
-    let result = largest_ref(&number_list);
-    println!("The largest number is {}", *result);
-
-    let result = largest_ref(&char_list);
-    println!("The largest char is {}", *result);
+    let pair = Pair::new(3, 5);
+    pair.cmp_display();
 }
