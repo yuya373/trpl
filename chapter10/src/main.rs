@@ -1,20 +1,21 @@
-// 1. fn first_word<'a>(s: &'a str) -> &str {
-// 2. fn first_word<'a>(s: &'a str) -> &'a str {
-// Now all the references in this function signature have lifetimes, and the compiler can continue its analysis without needing the programmer to annotate the lifetimes in this function signature.
-fn first_word(s: &str) -> &str {
-    let bytes = s.as_bytes();
+struct ImportantExcerpt<'a> {
+    part: &'a str,
+}
 
-    for (i, &item) in bytes.iter().enumerate() {
-        if item == b' ' {
-            return &s[0..i];
-        }
+impl<'a> ImportantExcerpt<'a> {
+    fn level(&self) -> i32 {
+        3
     }
 
-    &s[..]
+    fn announce_and_return_part(&self, announcement: &str) -> &str {
+        println!("Attention please: {}", announcement);
+        self.part
+    }
 }
 
 fn main() {
-    let sentence = "This is long sentence";
-    let word = first_word(sentence);
-    println!("word: {}", word);
+    let p = "part";
+    let e = ImportantExcerpt { part: p };
+
+    println!("level: {}", e.level());
 }
