@@ -1,22 +1,20 @@
-#[derive(Debug)]
-struct ImportantExcept<'a> {
-    part: &'a str,
+// 1. fn first_word<'a>(s: &'a str) -> &str {
+// 2. fn first_word<'a>(s: &'a str) -> &'a str {
+// Now all the references in this function signature have lifetimes, and the compiler can continue its analysis without needing the programmer to annotate the lifetimes in this function signature.
+fn first_word(s: &str) -> &str {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+
+    &s[..]
 }
 
 fn main() {
-    let novel = String::from("Call me Ishmael. Some years ago...");
-    let first_sentence = novel.split('.').next().expect("Could not find a '.'");
-    let i = ImportantExcept {
-        part: first_sentence,
-    };
-    println!("i: {:?}", i);
-
-    let e;
-    {
-        let s = String::from("str");
-        // s does not live long enough
-        let t = s.as_str();
-        e = ImportantExcept { part: t };
-    }
-    println!("e: {:?}", e);
+    let sentence = "This is long sentence";
+    let word = first_word(sentence);
+    println!("word: {}", word);
 }
